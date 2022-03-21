@@ -142,6 +142,7 @@ async function server() {
                     title: updateDoctor.title,
                     image: updateDoctor.image,
                     price: updateDoctor.price,
+                    discount: updateDoctor.discount,
                     speciality: updateDoctor.speciality,
                     degrees: updateDoctor.degrees,
                     experience: updateDoctor.experience,
