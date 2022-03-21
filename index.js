@@ -69,6 +69,22 @@ async function server() {
             res.json(result)
         });
 
+        // appointments get api
+        app.get('/appointments', async (req, res) => {
+            const cursor = appointmentsCollection.find({});
+            const doctors = await cursor.toArray();
+            res.send(doctors);
+
+        });
+
+        // Delete Appointments Api
+        app.delete('/appointments/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await appointmentsCollection.deleteOne(query);
+            res.json(result);
+        })
+
         // user post api
         app.post('/users', async (req, res) => {
             const user = req.body;
