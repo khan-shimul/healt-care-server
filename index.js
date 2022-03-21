@@ -33,6 +33,24 @@ async function server() {
             // console.log(result)
             res.json(result);
         });
+
+
+        // Doctors get api
+        app.get('/doctors', async (req, res) => {
+            const cursor = doctorsCollection.find({});
+            const doctors = await cursor.toArray();
+            res.send(doctors);
+
+        });
+
+        // Find Single Doctors Api
+        app.get('/doctors/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const doctor = await doctorsCollection.findOne(query);
+            res.send(doctor);
+        });
+
     }
     finally {
         // await client.close();
