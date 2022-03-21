@@ -53,6 +53,15 @@ async function server() {
             res.send(doctor);
         });
 
+        // Delete Doctor Api
+        app.delete('/doctors/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await doctorsCollection.deleteOne(query);
+            res.json(result);
+        })
+
+
         // appointments post api
         app.post('/appointments', async (req, res) => {
             const appointment = req.body;
@@ -102,6 +111,31 @@ async function server() {
             }
 
             res.json({ admin: isAdmin })
+        });
+
+
+        // UPDATE API
+        app.put('/doctors/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateDoctor = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    name: updateDoctor.name,
+                    title: updateDoctor.title,
+                    image: updateDoctor.image,
+                    price: updateDoctor.price,
+                    speciality: updateDoctor.speciality,
+                    degrees: updateDoctor.degrees,
+                    experience: updateDoctor.experience,
+                    workDays: updateDoctor.workDays,
+                    description: updateDoctor.description
+
+                },
+            };
+            const result = await doctorsCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
         });
 
     }
