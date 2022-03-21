@@ -25,6 +25,7 @@ async function server() {
         const database = client.db('end_game');
         const doctorsCollection = database.collection('doctors');
         const appointmentsCollection = database.collection('appointments');
+        const usersCollection = database.collection('users');
 
 
         // Doctors post api
@@ -58,6 +59,44 @@ async function server() {
             const result = await appointmentsCollection.insertOne(appointment);
             res.json(result)
         });
+
+
+        // Users get api
+        app.get('/users', async (req, res) => {
+            const cursor = usersCollection.find({});
+            const users = await cursor.toArray();
+            res.send(users);
+
+        });
+
+        // user post api
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            // console.log(result);
+            res.json(result);
+        });
+
+
+        // user create or update put api
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const options = { upsert: true };
+            const updateDoc = { $set: user };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        });
+
+        // Make Admin Put Api
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body;
+            // console.log(req.body)
+            const filter = { email: user.email };
+            const updateDoc = { $set: { role: 'admin' } };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        })
 
     }
     finally {
