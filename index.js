@@ -24,6 +24,7 @@ async function server() {
         // Database & Collection
         const database = client.db('end_game');
         const doctorsCollection = database.collection('doctors');
+        const appointmentsCollection = database.collection('appointments');
 
 
         // Doctors post api
@@ -49,6 +50,13 @@ async function server() {
             const query = { _id: ObjectId(id) };
             const doctor = await doctorsCollection.findOne(query);
             res.send(doctor);
+        });
+
+        // appointments post api
+        app.post('/appointments', async (req, res) => {
+            const appointment = req.body;
+            const result = await appointmentsCollection.insertOne(appointment);
+            res.json(result)
         });
 
     }
