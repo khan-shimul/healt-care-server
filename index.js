@@ -78,12 +78,22 @@ async function server() {
 
         });
 
+        // Find Appointment using query
+        app.get('/myAppointments', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const cursor = appointmentsCollection.find(query);
+            const appointments = await cursor.toArray();
+            res.json(appointments);
+        });
+
+
         // Appointment Done Status
         app.put('/appointments/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const updateDoc = {
-                $set: { status: 'Done' }
+                $set: { status: 'Visited' }
             };
             const result = await appointmentsCollection.updateOne(filter, updateDoc);
             res.json(result);
