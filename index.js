@@ -26,6 +26,7 @@ async function server() {
         const doctorsCollection = database.collection('doctors');
         const appointmentsCollection = database.collection('appointments');
         const usersCollection = database.collection('users');
+        const reviewsCollection = database.collection('reviews');
 
 
         // Doctors post api
@@ -77,13 +78,24 @@ async function server() {
 
         });
 
+        // Appointment Done Status
+        app.put('/appointments/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: { status: 'Done' }
+            };
+            const result = await appointmentsCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        });
+
         // Delete Appointments Api
         app.delete('/appointments/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await appointmentsCollection.deleteOne(query);
             res.json(result);
-        })
+        });
 
         // user post api
         app.post('/users', async (req, res) => {
@@ -152,6 +164,39 @@ async function server() {
                 },
             };
             const result = await doctorsCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        });
+
+        // Reviews post api
+        app.post('/reviews', async (req, res) => {
+            const review = req.body.data;
+            const result = await reviewsCollection.insertOne(review);
+            res.json(result);
+        });
+
+        // get reviews
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const reviews = await cursor.toArray();
+            res.json(reviews);
+        });
+
+        // Review Approved
+        app.put('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: { isApproved: true }
+            };
+            const result = await reviewsCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        });
+
+        // Delete Review
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await reviewsCollection.deleteOne(query);
             res.json(result);
         });
 
